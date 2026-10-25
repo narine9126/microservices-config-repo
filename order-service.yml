@@ -30,3 +30,19 @@ resilience4j:
         # Once circuit breaker enters into OPEN state, It will wait 10 seconds before normally transitioning into HALF-OPEN.
         # During OPEN state, calls to this method rejected, and fallbackmethod can handle these rejected calls.
         wait-duration-in-open-state: 10s
+  retry:
+    instances:
+      productService:
+        # Maximum of 4 total attempts: 1 initial call + 3 retries.
+        maxAttempts: 4
+        # Initial delay between retry attempts.
+        waitDuration: 2s
+        # Enables increasing retry delays.
+        enableExponentialBackoff: true
+        # Doubles the delay after each failed attempt.(2nd attempt after two sec, 3rd attempt after four sec, 4th attempt after 8 seconds)
+        # meaning, exponential backoff, the retry delays are approximately 2 seconds, 4 seconds, and 8 seconds
+        exponentialBackoffMultiplier: 2
+        # Retry only the specified exception types.
+        retryExceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
