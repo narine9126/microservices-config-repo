@@ -20,7 +20,13 @@ resilience4j:
   circuitbreaker:
     instances:
       productService:
+        # The circuit breaker monitors most recent 5 calls to the method. If the last 5 calls have 2 failures and 3 success the failure rate is 40%.
         sliding-window-size: 5
+        # The circute breaker expects minimum 5 calls to be recorded, before it calculate failure rate and decides whether to open circuit.
         minimumNumberOfCalls: 5
+        # If the failure rate reaches or exceeds 50% then circuit breaker state transition to OPEN (calls not allowed in this state), indicates minimum number of calls have been reached.
+        # formula: failureRate = (Failed Calls/Total Recorded Calls) * 100
         failure-rate-threshold: 50
+        # Once circuit breaker enters into OPEN state, It will wait 10 seconds before normally transitioning into HALF-OPEN.
+        # During OPEN state, calls to this method rejected, and fallbackmethod can handle these rejected calls.
         wait-duration-in-open-state: 10s
